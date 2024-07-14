@@ -31,7 +31,7 @@ $vsixData = $listing.results.extensions.versions `
         New-Object psobject -Property $extensionProperties
     }
 
-$nugetVersions = Find-Package -AllVersions -AllowPrereleaseVersions -Source $env:NUGET_SOURCE ALC.Dlls `
+$nugetVersions = Find-Package -AllVersions -AllowPrereleaseVersions -Source $env:NUGET_SOURCE ALC.Analyzer.Dlls `
     | Select-Object -ExpandProperty Version
 
 $newVsixData = $vsixData | Where-Object { $nugetVersions -notcontains $_.Version }
