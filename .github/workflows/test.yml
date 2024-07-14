@@ -1,6 +1,7 @@
 name: test
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - test
@@ -10,6 +11,5 @@ jobs:
     uses: dannoe/ALC-analyzer-dlls/.github/workflows/publish_nuget_matrix.yml@test
     with:
       NUGET_SOURCE: ${{ vars.NUGET_STAGING_SOURCE }}
-
     secrets:
       NUGET_APIKEY: ${{ secrets.NUGET_STAGING_APIKEY }}
