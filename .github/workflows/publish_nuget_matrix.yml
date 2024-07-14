@@ -1,7 +1,6 @@
 name: Publish NuGet Package (matrix)
 
 on:
-  workflow_dispatch: 
   workflow_call:
     secrets:
       NUGET_APIKEY: 
