@@ -50,5 +50,5 @@ jobs:
       working-directory: ./scripts
       shell: pwsh
       run: |
-        ./Package-ALVsixAsNuget.ps1 -Version ${{ matrix.Version }} -Prerelease ${{ matrix.Prerelease }} -VsixPackageUrl ${{ matrix.PackageUrl }}
+        ./Package-ALVsixAsNuget.ps1 -Version ${{ matrix.Version }} -Prerelease:$([System.Convert]::ToBoolean("${{ matrix.Prerelease }}")) -VsixPackageUrl ${{ matrix.PackageUrl }}
         dotnet nuget push ..\artifacts\*.nupkg -k ${{ secrets.NUGET_APIKEY }} -s ${{ inputs.NUGET_SOURCE }}
