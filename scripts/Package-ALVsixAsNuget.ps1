@@ -1,6 +1,6 @@
 param (
     [Parameter(Mandatory)] 
-    [switch] $Prerelease = $true,
+    [switch] $Prerelease,
     [Parameter(Mandatory)] 
     [string] $Version,
     [Parameter(Mandatory)] 
