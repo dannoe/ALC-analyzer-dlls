@@ -1,6 +1,11 @@
 [CmdletBinding(SupportsShouldProcess=$True)]
 Param()
 
+if (-not $env:NUGET_SOURCE) 
+{
+    throw "Environment variables NUGET_SOURCE is not set."
+}
+
 $webRequestParams = @{
     Method = 'POST'
     UseBasicParsing = $True
@@ -26,18 +31,15 @@ $vsixData = $listing.results.extensions.versions `
         New-Object psobject -Property $extensionProperties
     }
 
-$nugetVersions = Find-Package -AllVersions -AllowPrereleaseVersions -Source $nugetSource ALC.Dlls `
+$nugetVersions = Find-Package -AllVersions -AllowPrereleaseVersions -Source $env:NUGET_SOURCE ALC.Dlls `
     | Select-Object -ExpandProperty Version
 
-foreach ($vsix in $vsixData)
+$newVsixData = $vsixData | Where-Object { $nugetVersions -notcontains $_.Version }
+
+if ($newVsixData.Length -eq 0)
 {
-    if ($nugetVersions -notcontains $vsix.Version)
-    {
-        if ($WhatIfPreference) {
-            Write-Host .\Push-ALVsixAsNuget.ps1 -Version $vsix.Version -Prerelease $vsix.Prerelease -VsixPackageUrl $vsix.PackageUrl
-        } 
-        else {
-            .\Push-ALVsixAsNuget.ps1 -Version $vsix.Version -Prerelease $vsix.Prerelease -VsixPackageUrl $vsix.PackageUrl
-        }
-    }
+    Write-Host "No new vsix versions found. Aborting."
+    return;
 }
+
+$newVsixData | ConvertTo-Json -Compress

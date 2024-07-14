@@ -1,7 +1,10 @@
 param (
+    [Parameter(Mandatory)] 
     [switch] $PreRelease = $true,
-    [string] $Version = $null,
-    [string] $VsixPackageUrl = ""
+    [Parameter(Mandatory)] 
+    [string] $Version,
+    [Parameter(Mandatory)] 
+    [string] $VsixPackageUrl
 )
 
 function New-TemporaryDirectory {
@@ -12,9 +15,6 @@ function New-TemporaryDirectory {
     } while (-not $item)
     return $item.FullName
 }
-
-# $nugetSource = "https://api.nuget.org/v3/index.json"
-$nugetSource = "https://apiint.nugettest.org/v3/index.json"
 
 $tempFile = New-TemporaryFile
 $tempFolder = New-TemporaryDirectory
@@ -57,6 +57,3 @@ Get-ChildItem -Path (Join-Path $tempFolder \extension\bin\win32) -Filter "*.dll"
 dotnet pack ..\src\ALC.Dlls\ -p:PackageVersion=$($Version) --output ..\artifacts
 
 Remove-Item -Path $tempFolder -Force -ErrorAction SilentlyContinue -Recurse
-
-dotnet nuget push ..\artifacts\*.nupkg -k $env:NUGET_API_KEY -s $nugetSource
-

@@ -1,0 +1,53 @@
+name: Publish NuGet Package (matrix)
+
+on:
+  workflow_dispatch: 
+  workflow_call:
+    secrets:
+      NUGET_APIKEY: 
+        required: true  
+    inputs:
+      NUGET_SOURCE:
+        required: true
+        type: string
+
+jobs:
+  prepare-matrix:
+    name: "Prepare version matrix"
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.generate_matrix.outputs.matrix }}
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Generate matrix
+      id: generate_matrix
+      working-directory: ./scripts
+      shell: pwsh
+      run: |
+        $versions = & ./Get-VersionMatrix.ps1
+        "matrix=$versions" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+
+  package:
+    needs: prepare-matrix
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJson(needs.prepare-matrix.outputs.matrix) }}
+
+    name: Package and push - Version ${{ matrix.version }}
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Get latest VSIX versions and publish new versions
+      working-directory: ./scripts
+      shell: pwsh
+      run: |
+        ./Package-ALVsixAsNuget.ps1 -Version ${{ matrix.Version }} -Prerelease ${{ matrix.Prerelease }} -VsixPackageUrl ${{ matrix.PackageUrl }}
+        dotnet nuget push ..\artifacts\*.nupkg -k ${{ secrets.NUGET_APIKEY }} -s ${{ inputs.NUGET_SOURCE }}
