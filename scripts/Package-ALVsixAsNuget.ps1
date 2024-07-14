@@ -34,13 +34,13 @@ $analyzerAssembliesToCopy = @(
     "Microsoft.Dynamics.Nav.UICop.dll"
 )
 
-New-Item -Type Directory ..\src\ALC.Dlls\libs -Force
+New-Item -Type Directory ..\src\ALC.Analyzer.Dlls\libs -Force
 
 Get-ChildItem -Path (Join-Path $tempFolder \extension\bin\Analyzers) -Filter "*.dll" `
     | Where-Object { $analyzerAssembliesToCopy -contains $_.Name } `
     | ForEach-Object { 
         Write-Verbose $_.FullName
-        Copy-Item -Path $_.FullName -Destination ..\src\ALC.Dlls\libs\ 
+        Copy-Item -Path $_.FullName -Destination ..\src\ALC.Analyzer.Dlls\libs\ 
         }
 
 $compilerAssembliesToCopy = @(
@@ -51,9 +51,9 @@ Get-ChildItem -Path (Join-Path $tempFolder \extension\bin\win32) -Filter "*.dll"
     | Where-Object { $compilerAssembliesToCopy -contains $_.Name } `
     | ForEach-Object { 
         Write-Verbose $_.FullName
-        Copy-Item -Path $_.FullName -Destination ..\src\ALC.Dlls\libs\ 
+        Copy-Item -Path $_.FullName -Destination ..\src\ALC.Analyzer.Dlls\libs\ 
     }
 
-dotnet pack ..\src\ALC.Dlls\ -p:PackageVersion=$($Version) --output ..\artifacts
+dotnet pack ..\src\ALC.Analyzer.Dlls\ -p:PackageVersion=$($Version) --output ..\artifacts
 
 Remove-Item -Path $tempFolder -Force -ErrorAction SilentlyContinue -Recurse
