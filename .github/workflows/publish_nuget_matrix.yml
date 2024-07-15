@@ -33,6 +33,7 @@ jobs:
 
   package:
     needs: prepare-matrix
+    if: ${{ needs.prepare-matrix.outputs.matrix != '[]' && needs.prepare-matrix.outputs.matrix != '' }}
     runs-on: ubuntu-latest
 
     strategy:
