@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>{{ id }}</id>
+    <description>{{ description }}</description>
+    <version>1.0.0</version>
+    <authors>Microsoft</authors>
+    <owners>Microsoft</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="file">LICENSE.md</license>
+    <tags>AL BusinessCentral BC Dynamics365 Compiler</tags>
+    <dependencies>
+      <group targetFramework="{{ targetFramework }}" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="LICENSE.md" target="" />
+    <file src="{{ sourceFile }}" target="{{ targetPath }}" />
+  </files>
+</package>
