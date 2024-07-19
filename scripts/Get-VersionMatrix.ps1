@@ -19,7 +19,7 @@ $listing = Invoke-WebRequest @webRequestParams
 
 $vsixData = $listing.results.extensions.versions `
     | Where-Object properties -ne $null `
-    | Where-Object { [Version]$_.Version -ge [Version]"10.0.0" } `
+    | Where-Object { [Version]$_.Version -ge [Version]"14.0.1002061" } `
     | ForEach-object { 
         $extensionProperties = @{
             Version = $_.Version
