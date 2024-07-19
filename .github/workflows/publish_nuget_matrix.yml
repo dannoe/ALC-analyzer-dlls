@@ -48,8 +48,8 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Get latest VSIX versions and publish new versions
-      working-directory: ./scripts
+      working-directory: ./nuspecs
       shell: pwsh
       run: |
-        ./Package-ALVsixAsNuget.ps1 -Version ${{ matrix.Version }} -Prerelease:$([System.Convert]::ToBoolean("${{ matrix.Prerelease }}")) -VsixPackageUrl ${{ matrix.PackageUrl }}
+        ./Package.ps1 -Version ${{ matrix.Version }} -Prerelease:$([System.Convert]::ToBoolean("${{ matrix.Prerelease }}")) -VsixPackageUrl ${{ matrix.PackageUrl }}
         dotnet nuget push ..\artifacts\*.nupkg -k ${{ secrets.NUGET_APIKEY }} -s ${{ inputs.NUGET_SOURCE }}
