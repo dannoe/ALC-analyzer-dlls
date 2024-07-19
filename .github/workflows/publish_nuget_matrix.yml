@@ -33,7 +33,6 @@ jobs:
 
   package:
     needs: prepare-matrix
-    if: ${{ needs.prepare-matrix.outputs.matrix != '[]' && needs.prepare-matrix.outputs.matrix != '' }}
     runs-on: ubuntu-latest
 
     strategy:
@@ -48,13 +47,8 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Get latest VSIX versions and publish new versions
-      working-directory: ./nuspecs
+      working-directory: ./scripts
       shell: pwsh
       run: |
-        ./Package.ps1 -Version ${{ matrix.Version }} -Prerelease:$([System.Convert]::ToBoolean("${{ matrix.Prerelease }}")) -VsixPackageUrl ${{ matrix.PackageUrl }}
-        
-        $files = Get-ChildItem ../artifacts/ -Filter *.nupkg
-        foreach ($file in $files)
-        {
-          dotnet nuget push "$file" -k ${{ secrets.NUGET_APIKEY }} -s ${{ inputs.NUGET_SOURCE }}
-        }
+        ./Package-ALVsixAsNuget.ps1 -Version ${{ matrix.Version }} -Prerelease ${{ matrix.Prerelease }} -VsixPackageUrl ${{ matrix.PackageUrl }}
+        dotnet nuget push ..\artifacts\*.nupkg -k ${{ secrets.NUGET_APIKEY }} -s ${{ inputs.NUGET_SOURCE }}

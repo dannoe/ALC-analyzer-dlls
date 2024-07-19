@@ -1,6 +1,6 @@
 param (
     [Parameter(Mandatory)] 
-    [switch] $Prerelease,
+    [switch] $PreRelease = $true,
     [Parameter(Mandatory)] 
     [string] $Version,
     [Parameter(Mandatory)] 
@@ -54,12 +54,6 @@ Get-ChildItem -Path (Join-Path $tempFolder \extension\bin\win32) -Filter "*.dll"
         Copy-Item -Path $_.FullName -Destination ..\src\ALC.Analyzer.Dlls\libs\ 
     }
 
-$VersionSuffix = ""
-if ($Prerelease)
-{
-	$VersionSuffix = "prerelease"
-}
-
-dotnet pack ..\src\ALC.Analyzer.Dlls\ -p:PackageVersion=$($Version) --version-suffix $VersionSuffix --output ..\artifacts
+dotnet pack ..\src\ALC.Analyzer.Dlls\ -p:PackageVersion=$($Version) --output ..\artifacts
 
 Remove-Item -Path $tempFolder -Force -ErrorAction SilentlyContinue -Recurse
