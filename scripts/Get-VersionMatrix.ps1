@@ -70,4 +70,4 @@ if ($vsixData.Length -eq 0)
     return;
 }
 
-$vsixData | ConvertTo-Json -Compress
+$vsixData | ConvertTo-Json -Compress -AsArray
