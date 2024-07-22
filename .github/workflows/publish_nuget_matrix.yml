@@ -9,6 +9,9 @@ on:
       NUGET_SOURCE:
         required: true
         type: string
+      FORCE_VERSION:
+        reuired: false
+        type: string
 
 jobs:
   prepare-matrix:
@@ -28,11 +31,12 @@ jobs:
       working-directory: ./scripts
       shell: pwsh
       run: |
-        $versions = & ./Get-VersionMatrix.ps1
+        $versions = & ./Get-VersionMatrix.ps1 -ForceVersion ${{ inputs.FORCE_VERSION }}
         "matrix=$versions" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
 
   package:
     needs: prepare-matrix
+    if: ${{ needs.prepare-matrix.outputs.matrix != '[]' && needs.prepare-matrix.outputs.matrix != '' }}
     runs-on: ubuntu-latest
 
     strategy:
@@ -47,8 +51,13 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Get latest VSIX versions and publish new versions
-      working-directory: ./scripts
+      working-directory: ./nuspecs
       shell: pwsh
       run: |
-        ./Package-ALVsixAsNuget.ps1 -Version ${{ matrix.Version }} -Prerelease ${{ matrix.Prerelease }} -VsixPackageUrl ${{ matrix.PackageUrl }}
-        dotnet nuget push ..\artifacts\*.nupkg -k ${{ secrets.NUGET_APIKEY }} -s ${{ inputs.NUGET_SOURCE }}
+        ./Package.ps1 -Version ${{ matrix.Version }} -Prerelease:$([System.Convert]::ToBoolean("${{ matrix.Prerelease }}")) -VsixPackageUrl ${{ matrix.PackageUrl }}
+        
+        $files = Get-ChildItem ../artifacts/ -Filter *.nupkg
+        foreach ($file in $files)
+        {
+          dotnet nuget push "$file" -k ${{ secrets.NUGET_APIKEY }} -s ${{ inputs.NUGET_SOURCE }} --skip-duplicate --force-english-output
+        }

@@ -3,6 +3,12 @@ name: master
 on:
   schedule:
     - cron: '*/30 * * * *' # Runs every 30 minutes
+  workflow_dispatch:
+    inputs:
+      force_version:
+        description: 'Version (force)'
+        required: false
+        type: string
 
 jobs:
   call-workflow:
@@ -10,6 +16,6 @@ jobs:
     uses: dannoe/ALC-analyzer-dlls/.github/workflows/publish_nuget_matrix.yml@master
     with:
       NUGET_SOURCE: ${{ vars.NUGET_SOURCE }}
-
+      FORCE_VERSION: ${{ inputs.force_version }}
     secrets:
       NUGET_APIKEY: ${{ secrets.NUGET_APIKEY }}
