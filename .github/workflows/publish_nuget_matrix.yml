@@ -31,7 +31,7 @@ jobs:
       working-directory: ./scripts
       shell: pwsh
       run: |
-        $versions = & ./Get-VersionMatrix.ps1 -ForceVersion ${{ inputs.FORCE_VERSION }}
+        $versions = & ./Get-VersionMatrix.ps1 -ForceVersion "${{ inputs.FORCE_VERSION }}"
         "matrix=$versions" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
 
   package:
