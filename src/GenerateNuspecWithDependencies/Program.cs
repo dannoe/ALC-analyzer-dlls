@@ -130,7 +130,7 @@ class Program
 					new XAttribute("type", "file"),
 					"LICENSE.md"),
                 new XElement("readme", "README.md"),
-                new XElement("projectUrl", "https://github.com/dannoe/ALC-analyzer-dlls")
+                new XElement("projectUrl", "https://github.com/dannoe/ALC-analyzer-dlls"),
                 new XElement("description", $"Unofficial package for the {assemblyDefinition.Name} assembly"),
                 new XElement("tags", "AL BusinessCentral BC Compiler"),
                 new XElement("dependencies",
