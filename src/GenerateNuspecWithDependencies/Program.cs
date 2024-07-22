@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Runtime.Versioning;
@@ -125,7 +125,6 @@ class Program
                 new XElement("version", version),
                 new XElement("title", $"Unofficial package for the {assemblyDefinition.Name} assembly"),
                 new XElement("authors", "Microsoft"),
-                new XElement("owners", "Microsoft"),
                 new XElement("requireLicenseAcceptance", "false"),
 				new XElement("license", 
 					new XAttribute("type", "file"),
